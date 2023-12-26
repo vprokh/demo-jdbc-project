@@ -1,6 +1,7 @@
-import com.example.dao.AddressConnectionPoolDao;
-import com.example.dao.AddressSingletonConnectionDao;
-import com.example.dao.UserDao;
+import com.example.dao.AddressDao;
+import com.example.dao.impl.AddressConnectionPoolDao;
+import com.example.dao.impl.AddressSingletonConnectionDao;
+import com.example.dao.impl.UserDao;
 import com.example.db.DatabaseStorage;
 import com.example.db.SimpleConnectionPool;
 import com.example.model.User;
@@ -9,8 +10,8 @@ import java.sql.SQLException;
 
 public class Main {
 
-    public static void main(String[] args) throws SQLException, InterruptedException {
-//        useSingletonConnection();
+    public static void main(String[] args) throws SQLException {
+        useSingletonConnection();
         useConnectionPool();
     }
 
@@ -19,10 +20,10 @@ public class Main {
 
         try {
             simpleConnectionPool = SimpleConnectionPool.create();
-            AddressConnectionPoolDao addressConnectionPoolDao = new AddressConnectionPoolDao(simpleConnectionPool);
+            AddressDao addressConnectionPoolDao = new AddressConnectionPoolDao(simpleConnectionPool);
             UserDao userDao = new UserDao(addressConnectionPoolDao);
 
-            User user = userDao.readUser(1L);
+            User user = userDao.read(1L);
 
             System.out.println(user);
         } finally {
@@ -36,10 +37,10 @@ public class Main {
 
     private static void useSingletonConnection() throws SQLException {
         try {
-            AddressSingletonConnectionDao addressSingletonConnectionDao = new AddressSingletonConnectionDao();
+            AddressDao addressSingletonConnectionDao = new AddressSingletonConnectionDao();
             UserDao userDao = new UserDao(addressSingletonConnectionDao);
 
-            User user = userDao.readUser(1L);
+            User user = userDao.read(1L);
 
             System.out.println(user);
         } finally {

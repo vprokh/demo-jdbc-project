@@ -1,7 +1,9 @@
-package com.example.dao;
+package com.example.dao.impl;
 
-import com.example.db.DatabaseStorageSingleton;
+import com.example.dao.AddressDao;
+import com.example.db.SimpleConnectionPool;
 import com.example.model.Address;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +15,8 @@ import java.util.List;
 
 // CRUD -> Create, Read, Update, Delete
 // DAO -> Data access object
-public class AddressSingletonConnectionDao {
+@RequiredArgsConstructor
+public class AddressConnectionPoolDao implements AddressDao {
     private static final String GET_ADDRESS_QUERY =
             "SELECT * FROM address WHERE id = ?";
     private static final String INSERT_ADDRESS_PREPARED_STATEMENT =
@@ -24,9 +27,15 @@ public class AddressSingletonConnectionDao {
             "UPDATE address SET display_address = ?, city = ?, post_code = ?, street = ?, created_at = ? WHERE id = ?";
     private static final String DELETE_ADDRESS_PREPARED_STATEMENT = "DELETE FROM address WHERE id = ?";
 
-    public Address readAddress(Long id) {
+    private final SimpleConnectionPool connectionPool;
+
+    @Override
+    public Address read(Long id) {
+        Connection connection = null;
+
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
 
             PreparedStatement preparedStatement = connection.prepareStatement(GET_ADDRESS_QUERY);
             preparedStatement.setLong(1, id);
@@ -46,24 +55,37 @@ public class AddressSingletonConnectionDao {
             return address;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
-    public void insertAddress(Address address) {
+    @Override
+    public void save(Address address) {
+        Connection connection = null;
+
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection.setAutoCommit(false);
+
+            connection = connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS_PREPARED_STATEMENT);
             populatePrepareStatement(preparedStatement, address);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
-    public void insertAddress(List<Address> addresses) {
+    @Override
+    public void save(List<Address> addresses) {
+        Connection connection = null;
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             for (Address address : addresses) {
@@ -75,12 +97,16 @@ public class AddressSingletonConnectionDao {
             statement.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
-    public void insertAddressPreparedStatement(List<Address> addresses) {
+    public void savePreparedStatement(List<Address> addresses) {
+        Connection connection = null;
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS_PREPARED_STATEMENT);
 
             for (Address address : addresses) {
@@ -90,12 +116,17 @@ public class AddressSingletonConnectionDao {
             preparedStatement.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
-    public void updateAddress(Long id, Address address) {
+    @Override
+    public void update(Long id, Address address) {
+        Connection connection = null;
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ADDRESS_PREPARED_STATEMENT);
 
             populatePrepareStatement(preparedStatement, address);
@@ -105,12 +136,17 @@ public class AddressSingletonConnectionDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
-    public void deleteAddress(Long id) {
+    @Override
+    public void delete(Long id) {
+        Connection connection = null;
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ADDRESS_PREPARED_STATEMENT);
 
             preparedStatement.setLong(1, id);
@@ -118,6 +154,8 @@ public class AddressSingletonConnectionDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
