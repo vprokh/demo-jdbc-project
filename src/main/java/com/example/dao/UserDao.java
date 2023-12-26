@@ -1,6 +1,6 @@
 package com.example.dao;
 
-import com.example.db.DatabaseStorage;
+import com.example.db.DatabaseStorageSingleton;
 import com.example.model.Role;
 import com.example.model.User;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +20,12 @@ public class UserDao {
             "UPDATE users SET name = ?, last_name = ?, email = ?, phone_number = ?, password = ?, role = ?, address_id = ? WHERE id = ?";
     private static final String DELETE_USER_PREPARED_STATEMENT = "DELETE FROM users WHERE id = ?";
 
-    private final AddressDao addressDao;
+    private final AddressConnectionPoolDao addressConnectionPoolDao;
 
     public User readUser(Long id) {
-        try (Connection connection = DatabaseStorage.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_QUERY)) {
-
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_QUERY);
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -39,7 +39,7 @@ public class UserDao {
                 user.setPhoneNumber(resultSet.getString("phone_number"));
                 user.setPassoword(resultSet.getString("password"));
                 user.setRole(Role.valueOf(resultSet.getString("role")));
-                user.setAddress(addressDao.readAddress(resultSet.getLong("address_id")));
+                user.setAddress(addressConnectionPoolDao.readAddress(resultSet.getLong("address_id")));
             }
 
             return user;
@@ -49,8 +49,10 @@ public class UserDao {
     }
 
     public void insertUser(User user) {
-        try (Connection connection = DatabaseStorage.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_PREPARED_STATEMENT)) {
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_PREPARED_STATEMENT);
+            connection.setAutoCommit(false);
 
             populatePreparedStatement(user, preparedStatement);
 
@@ -62,9 +64,9 @@ public class UserDao {
     }
 
     public void updateUser(Long id, User user) {
-        try (Connection connection = DatabaseStorage.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_PREPARED_STATEMENT)) {
-
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_PREPARED_STATEMENT);
             populatePreparedStatement(user, preparedStatement);
             preparedStatement.setLong(8, id);
 
@@ -75,9 +77,9 @@ public class UserDao {
     }
 
     public void deleteUser(Long id) {
-        try (Connection connection = DatabaseStorage.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_PREPARED_STATEMENT)) {
-
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_PREPARED_STATEMENT);
             preparedStatement.setLong(1, id);
 
             preparedStatement.executeUpdate();
