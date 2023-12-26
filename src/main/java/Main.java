@@ -1,8 +1,10 @@
 import com.example.dao.AddressDao;
 import com.example.dao.impl.AddressConnectionPoolDao;
+import com.example.dao.impl.AddressHikariConnectionPoolDao;
 import com.example.dao.impl.AddressSingletonConnectionDao;
 import com.example.dao.impl.UserDao;
 import com.example.db.DatabaseStorage;
+import com.example.db.HikariPoolDataSource;
 import com.example.db.SimpleConnectionPool;
 import com.example.model.User;
 
@@ -11,8 +13,24 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) throws SQLException {
-        useSingletonConnection();
-        useConnectionPool();
+//        useSingletonConnection();
+        useHikariConnectionPool();
+//        useConnectionPool();
+    }
+
+    private static void useHikariConnectionPool() {
+        try {
+            AddressDao addressHikariConnectionPoolDao = new AddressHikariConnectionPoolDao();
+            UserDao userDao = new UserDao(addressHikariConnectionPoolDao);
+
+            User user = userDao.read(1L);
+
+            System.out.println(user);
+        } finally {
+            // do not forget to shut down connection pool after
+            // its usage (usually you want to shut down it before program ends its execution)
+            HikariPoolDataSource.shutdown();
+        }
     }
 
     private static void useConnectionPool() throws SQLException {

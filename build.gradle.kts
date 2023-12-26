@@ -16,6 +16,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.1")
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
+    implementation("com.zaxxer:HikariCP:5.1.0")
 }
 
 tasks.test {
