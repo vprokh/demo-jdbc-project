@@ -18,9 +18,9 @@ public class AddressHikariConnectionPoolDao implements AddressDao {
     private static final String GET_ADDRESS_QUERY =
             "SELECT * FROM address WHERE id = ?";
     private static final String INSERT_ADDRESS_PREPARED_STATEMENT =
-            "INSERT INTO address(\"display_address\",\"post_code\",\"city\",\"street\") VALUES (?, ?, ?, ?)";
+            "INSERT INTO address(display_address,post_code,city,street, created_at) VALUES (?, ?, ?, ?, ?)";
     private static final String INSERT_ADDRESS_STATEMENT =
-            "INSERT INTO address(\"id\", \"display_address\",\"post_code\",\"city\",\"street\") VALUES (%s, '%s', '%s', '%s', '%s')";
+            "INSERT INTO address(id, display_address,post_code,city,street) VALUES (%s, '%s', '%s', '%s', '%s')";
     private static final String UPDATE_ADDRESS_PREPARED_STATEMENT =
             "UPDATE address SET display_address = ?, city = ?, post_code = ?, street = ?, created_at = ? WHERE id = ?";
     private static final String DELETE_ADDRESS_PREPARED_STATEMENT = "DELETE FROM address WHERE id = ?";
@@ -125,5 +125,6 @@ public class AddressHikariConnectionPoolDao implements AddressDao {
         preparedStatement.setString(2, address.getPostCode());
         preparedStatement.setString(3, address.getCity());
         preparedStatement.setString(4, address.getStreet());
+        preparedStatement.setTimestamp(5, Timestamp.valueOf(address.getCreatedAt()));
     }
 }

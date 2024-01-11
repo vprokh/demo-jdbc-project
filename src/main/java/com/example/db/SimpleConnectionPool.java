@@ -11,9 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SimpleConnectionPool {
-    private String url;
-    private String user;
-    private String password;
+
     private final List<Connection> connectionPool;
     private List<Connection> usedConnections = new CopyOnWriteArrayList<>();
 

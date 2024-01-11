@@ -28,7 +28,7 @@ public final class ConfigurationFileUtils {
                     .forEach(line -> {
                         String[] keyValuePair = line.split(KEY_VALUE_SEPARATOR);
                         String key = keyValuePair[KEY_INDEX];
-                        String value = keyValuePair[VALUE_INDEX];
+                        String value = keyValuePair.length > VALUE_INDEX ? keyValuePair[VALUE_INDEX] : "";
                         configuration.put(key, value);
                     });
         } catch (IOException e) {

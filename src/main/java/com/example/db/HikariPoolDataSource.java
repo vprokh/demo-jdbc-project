@@ -27,6 +27,7 @@ public final class HikariPoolDataSource {
         config.setJdbcUrl(dbConfig.getDbUrl());
         config.setUsername(dbConfig.getDbUser());
         config.setPassword(dbConfig.getDbPassword());
+        config.setSchema("public");
 
         // might be moved to the properties file as well (probably, SHOULD be moved there)
         // take a look at the doc to get know what property does what - https://github.com/brettwooldridge/HikariCP#gear-configuration-knobs-baby
