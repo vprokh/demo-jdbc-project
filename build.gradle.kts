@@ -44,6 +44,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:8.0.1")
     implementation("org.postgresql:postgresql:42.2.24")
     implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("org.hibernate.orm:hibernate-core:6.4.2.Final")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
