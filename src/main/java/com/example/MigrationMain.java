@@ -1,3 +1,5 @@
+package com.example;
+
 import com.example.config.DbConfig;
 import com.example.flyway.MyFileWayCallback;
 import org.flywaydb.core.Flyway;

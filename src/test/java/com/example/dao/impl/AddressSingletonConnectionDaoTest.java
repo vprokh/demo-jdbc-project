@@ -1,7 +1,8 @@
 package com.example.dao.impl;
 
-import com.example.db.DatabaseStorageSingleton;
-import com.example.model.Address;
+import com.example.jdbc.db.DatabaseStorageSingleton;
+import com.example.jdbc.dao.impl.AddressSingletonConnectionDao;
+import com.example.jdbc.model.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

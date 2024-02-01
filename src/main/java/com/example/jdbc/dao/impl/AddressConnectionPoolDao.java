@@ -1,8 +1,9 @@
-package com.example.dao.impl;
+package com.example.jdbc.dao.impl;
 
-import com.example.dao.AddressDao;
-import com.example.db.DatabaseStorageSingleton;
-import com.example.model.Address;
+import com.example.jdbc.dao.AddressDao;
+import com.example.jdbc.db.SimpleConnectionPool;
+import com.example.jdbc.model.Address;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,21 +15,27 @@ import java.util.List;
 
 // CRUD -> Create, Read, Update, Delete
 // DAO -> Data access object
-public class AddressSingletonConnectionDao implements AddressDao {
+@RequiredArgsConstructor
+public class AddressConnectionPoolDao implements AddressDao {
     private static final String GET_ADDRESS_QUERY =
             "SELECT * FROM address WHERE id = ?";
     private static final String INSERT_ADDRESS_PREPARED_STATEMENT =
-            "INSERT INTO address(display_address,post_code,city,street,created_at) VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO address(\"display_address\",\"post_code\",\"city\",\"street\") VALUES (?, ?, ?, ?)";
     private static final String INSERT_ADDRESS_STATEMENT =
-            "INSERT INTO address(id, display_address,post_code,city,street) VALUES (%s, '%s', '%s', '%s', '%s')";
+            "INSERT INTO address(\"id\", \"display_address\",\"post_code\",\"city\",\"street\") VALUES (%s, '%s', '%s', '%s', '%s')";
     private static final String UPDATE_ADDRESS_PREPARED_STATEMENT =
             "UPDATE address SET display_address = ?, city = ?, post_code = ?, street = ?, created_at = ? WHERE id = ?";
     private static final String DELETE_ADDRESS_PREPARED_STATEMENT = "DELETE FROM address WHERE id = ?";
 
+    private final SimpleConnectionPool connectionPool;
+
     @Override
     public Address read(Long id) {
+        Connection connection = null;
+
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
 
             PreparedStatement preparedStatement = connection.prepareStatement(GET_ADDRESS_QUERY);
             preparedStatement.setLong(1, id);
@@ -48,26 +55,37 @@ public class AddressSingletonConnectionDao implements AddressDao {
             return address;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
     @Override
     public void save(Address address) {
+        Connection connection = null;
+
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection.setAutoCommit(false);
+
+            connection = connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS_PREPARED_STATEMENT);
             populatePrepareStatement(preparedStatement, address);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
     @Override
     public void save(List<Address> addresses) {
+        Connection connection = null;
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
             Statement statement = connection.createStatement();
 
             for (Address address : addresses) {
@@ -79,12 +97,16 @@ public class AddressSingletonConnectionDao implements AddressDao {
             statement.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
     public void savePreparedStatement(List<Address> addresses) {
+        Connection connection = null;
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS_PREPARED_STATEMENT);
 
             for (Address address : addresses) {
@@ -94,13 +116,17 @@ public class AddressSingletonConnectionDao implements AddressDao {
             preparedStatement.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
     @Override
     public void update(Long id, Address address) {
+        Connection connection = null;
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ADDRESS_PREPARED_STATEMENT);
 
             populatePrepareStatement(preparedStatement, address);
@@ -110,13 +136,17 @@ public class AddressSingletonConnectionDao implements AddressDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
     @Override
     public void delete(Long id) {
+        Connection connection = null;
+
         try {
-            Connection connection = DatabaseStorageSingleton.getConnection();
+            connection = connectionPool.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ADDRESS_PREPARED_STATEMENT);
 
             preparedStatement.setLong(1, id);
@@ -124,6 +154,8 @@ public class AddressSingletonConnectionDao implements AddressDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
         }
     }
 
@@ -132,6 +164,5 @@ public class AddressSingletonConnectionDao implements AddressDao {
         preparedStatement.setString(2, address.getPostCode());
         preparedStatement.setString(3, address.getCity());
         preparedStatement.setString(4, address.getStreet());
-        preparedStatement.setTimestamp(5, Timestamp.valueOf(address.getCreatedAt()));
     }
 }

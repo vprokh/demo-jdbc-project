@@ -1,8 +1,8 @@
-package com.example.dao.impl;
+package com.example.jdbc.dao.impl;
 
-import com.example.dao.AddressDao;
-import com.example.db.HikariPoolDataSource;
-import com.example.model.Address;
+import com.example.jdbc.dao.AddressDao;
+import com.example.jdbc.db.DatabaseStorageSingleton;
+import com.example.jdbc.model.Address;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,11 +14,11 @@ import java.util.List;
 
 // CRUD -> Create, Read, Update, Delete
 // DAO -> Data access object
-public class AddressHikariConnectionPoolDao implements AddressDao {
+public class AddressSingletonConnectionDao implements AddressDao {
     private static final String GET_ADDRESS_QUERY =
             "SELECT * FROM address WHERE id = ?";
     private static final String INSERT_ADDRESS_PREPARED_STATEMENT =
-            "INSERT INTO address(display_address,post_code,city,street, created_at) VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO address(display_address,post_code,city,street,created_at) VALUES (?, ?, ?, ?, ?)";
     private static final String INSERT_ADDRESS_STATEMENT =
             "INSERT INTO address(id, display_address,post_code,city,street) VALUES (%s, '%s', '%s', '%s', '%s')";
     private static final String UPDATE_ADDRESS_PREPARED_STATEMENT =
@@ -27,7 +27,9 @@ public class AddressHikariConnectionPoolDao implements AddressDao {
 
     @Override
     public Address read(Long id) {
-        try (Connection connection = HikariPoolDataSource.getConnection()) {
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
+
             PreparedStatement preparedStatement = connection.prepareStatement(GET_ADDRESS_QUERY);
             preparedStatement.setLong(1, id);
 
@@ -51,7 +53,8 @@ public class AddressHikariConnectionPoolDao implements AddressDao {
 
     @Override
     public void save(Address address) {
-        try (Connection connection = HikariPoolDataSource.getConnection()) {
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS_PREPARED_STATEMENT);
             populatePrepareStatement(preparedStatement, address);
 
@@ -63,7 +66,8 @@ public class AddressHikariConnectionPoolDao implements AddressDao {
 
     @Override
     public void save(List<Address> addresses) {
-        try (Connection connection = HikariPoolDataSource.getConnection()) {
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
             Statement statement = connection.createStatement();
 
             for (Address address : addresses) {
@@ -79,7 +83,8 @@ public class AddressHikariConnectionPoolDao implements AddressDao {
     }
 
     public void savePreparedStatement(List<Address> addresses) {
-        try (Connection connection = HikariPoolDataSource.getConnection()) {
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS_PREPARED_STATEMENT);
 
             for (Address address : addresses) {
@@ -94,7 +99,8 @@ public class AddressHikariConnectionPoolDao implements AddressDao {
 
     @Override
     public void update(Long id, Address address) {
-        try (Connection connection = HikariPoolDataSource.getConnection()) {
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ADDRESS_PREPARED_STATEMENT);
 
             populatePrepareStatement(preparedStatement, address);
@@ -109,7 +115,8 @@ public class AddressHikariConnectionPoolDao implements AddressDao {
 
     @Override
     public void delete(Long id) {
-        try (Connection connection = HikariPoolDataSource.getConnection()) {
+        try {
+            Connection connection = DatabaseStorageSingleton.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ADDRESS_PREPARED_STATEMENT);
 
             preparedStatement.setLong(1, id);

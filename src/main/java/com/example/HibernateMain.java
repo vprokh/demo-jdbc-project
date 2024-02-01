@@ -1,8 +1,8 @@
 package com.example;
 
 import com.example.config.HibernateConfig;
-import com.example.model.Address;
-import com.example.model.MyUser;
+import com.example.jdbc.model.Address;
+import com.example.hibernate.model.MyUser;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

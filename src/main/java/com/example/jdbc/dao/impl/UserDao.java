@@ -1,10 +1,10 @@
-package com.example.dao.impl;
+package com.example.jdbc.dao.impl;
 
-import com.example.dao.AddressDao;
-import com.example.dao.GenericDao;
-import com.example.db.DatabaseStorageSingleton;
-import com.example.model.Role;
-import com.example.model.User;
+import com.example.jdbc.dao.AddressDao;
+import com.example.jdbc.dao.GenericDao;
+import com.example.jdbc.db.DatabaseStorageSingleton;
+import com.example.jdbc.model.Role;
+import com.example.jdbc.model.User;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Connection;

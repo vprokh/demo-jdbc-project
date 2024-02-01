@@ -1,5 +1,6 @@
-package com.example.model;
+package com.example.hibernate.model;
 
+import com.example.jdbc.model.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

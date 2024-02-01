@@ -1,6 +1,6 @@
 package com.example.config;
 
-import com.example.model.MyUser;
+import com.example.hibernate.model.MyUser;
 import lombok.Getter;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

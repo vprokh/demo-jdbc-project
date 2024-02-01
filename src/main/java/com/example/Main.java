@@ -1,12 +1,14 @@
-import com.example.dao.AddressDao;
-import com.example.dao.impl.AddressConnectionPoolDao;
-import com.example.dao.impl.AddressHikariConnectionPoolDao;
-import com.example.dao.impl.AddressSingletonConnectionDao;
-import com.example.dao.impl.UserDao;
-import com.example.db.DatabaseStorage;
-import com.example.db.HikariPoolDataSource;
-import com.example.db.SimpleConnectionPool;
-import com.example.model.User;
+package com.example;
+
+import com.example.jdbc.dao.AddressDao;
+import com.example.jdbc.dao.impl.AddressConnectionPoolDao;
+import com.example.jdbc.dao.impl.AddressHikariConnectionPoolDao;
+import com.example.jdbc.dao.impl.AddressSingletonConnectionDao;
+import com.example.jdbc.dao.impl.UserDao;
+import com.example.jdbc.db.DatabaseStorage;
+import com.example.jdbc.db.HikariPoolDataSource;
+import com.example.jdbc.db.SimpleConnectionPool;
+import com.example.jdbc.model.User;
 
 import java.sql.SQLException;
 

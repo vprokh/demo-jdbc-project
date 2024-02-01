@@ -1,5 +1,5 @@
 INSERT INTO address (id, display_address, post_code, city, street, created_at)
-VALUES (1, '123 Main St', 'ABC123', 'New York', 'Main Street', '2023-11-30 08:00:00'),
+VALUES (1, '123 com.example.Main St', 'ABC123', 'New York', 'com.example.Main Street', '2023-11-30 08:00:00'),
        (2, '456 Elm St', 'DEF456', 'Los Angeles', 'Elm Street', '2023-11-29 15:30:00'),
        (3, '789 Oak St', 'GHI789', 'Chicago', 'Oak Avenue', '2023-11-28 12:45:00');
 

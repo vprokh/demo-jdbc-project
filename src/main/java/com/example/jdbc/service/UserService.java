@@ -1,7 +1,7 @@
-package com.example.service;
+package com.example.jdbc.service;
 
-import com.example.dao.impl.UserDao;
-import com.example.model.User;
+import com.example.jdbc.dao.impl.UserDao;
+import com.example.jdbc.model.User;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

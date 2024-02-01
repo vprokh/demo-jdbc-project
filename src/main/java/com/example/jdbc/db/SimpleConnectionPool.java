@@ -1,4 +1,4 @@
-package com.example.db;
+package com.example.jdbc.db;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

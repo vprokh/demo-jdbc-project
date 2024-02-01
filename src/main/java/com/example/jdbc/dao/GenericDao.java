@@ -1,4 +1,4 @@
-package com.example.dao;
+package com.example.jdbc.dao;
 
 import jdk.jshell.spi.ExecutionControl;
 

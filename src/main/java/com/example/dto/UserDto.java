@@ -1,6 +1,6 @@
 package com.example.dto;
 
-import com.example.model.Role;
+import com.example.jdbc.model.Role;
 
 public class UserDto {
     private Long id;

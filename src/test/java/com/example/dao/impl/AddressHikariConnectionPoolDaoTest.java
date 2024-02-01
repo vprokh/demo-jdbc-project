@@ -1,7 +1,8 @@
 package com.example.dao.impl;
 
 
-import com.example.model.Address;
+import com.example.jdbc.dao.impl.AddressHikariConnectionPoolDao;
+import com.example.jdbc.model.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +25,8 @@ public class AddressHikariConnectionPoolDaoTest {
         Address address = addressHikariConnectionPoolDao.read(DB_ADDRESS_ID);
 
         assertEquals(DB_ADDRESS_ID, address.getId());
-        assertEquals("123 Main St", address.getDisplayAddress());
-        assertEquals("Main Street", address.getStreet());
+        assertEquals("123 com.example.Main St", address.getDisplayAddress());
+        assertEquals("com.example.Main Street", address.getStreet());
         assertEquals("New York", address.getCity());
         assertEquals("ABC123", address.getPostCode());
     }

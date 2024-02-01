@@ -1,7 +1,7 @@
-package com.example.service;
+package com.example.jdbc.service;
 
-import com.example.dao.AddressDao;
-import com.example.model.Address;
+import com.example.jdbc.dao.AddressDao;
+import com.example.jdbc.model.Address;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
