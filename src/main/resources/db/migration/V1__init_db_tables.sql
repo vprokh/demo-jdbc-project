@@ -1,5 +1,3 @@
-SET MODE PostgreSQL;
-
 create table if not exists address
 (
     id              bigserial primary key,

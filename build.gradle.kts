@@ -45,6 +45,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.2.24")
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("org.hibernate.orm:hibernate-core:6.4.2.Final")
+    implementation("org.slf4j:slf4j-log4j12:1.7.32")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
